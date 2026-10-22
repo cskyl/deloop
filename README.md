@@ -17,7 +17,7 @@ Arjun Akula<sup>5,†</sup>
 <sup>1</sup>Google &nbsp; <sup>2</sup>Boston University &nbsp; <sup>3</sup>University of Washington &nbsp; <sup>4</sup>University of Southern California &nbsp; <sup>5</sup>Google DeepMind &nbsp; <sup>†</sup>Project lead
 
 [![Project page](https://img.shields.io/badge/Project-Page-2166ac)](https://cskyl.github.io/deloop/)
-[![arXiv](https://img.shields.io/badge/arXiv-ARXIV_ID-b31b1b)](https://arxiv.org/abs/ARXIV_ID)
+[![arXiv](https://img.shields.io/badge/arXiv-2610.19376-b31b1b)](https://arxiv.org/abs/2610.19376)
 [![Code](https://img.shields.io/badge/Code-coming%20soon-lightgrey)](#release-status)
 [![BibTeX](https://img.shields.io/badge/Cite-BibTeX-555)](#citation)
 
@@ -55,7 +55,7 @@ Language-model agents that run long tasks often redo work they have already done
 
 ## Release status
 
-The paper is on [arXiv](https://arxiv.org/abs/ARXIV_ID). The mining and evaluation code, the self-mined pair corpora, and the trained adapters are under review and will be released in this repository. This repository currently hosts the [project page](https://cskyl.github.io/deloop/) only.
+The paper is on [arXiv](https://arxiv.org/abs/2610.19376). The mining and evaluation code, the self-mined pair corpora, and the trained adapters are under review and will be released in this repository. This repository currently hosts the [project page](https://cskyl.github.io/deloop/) only.
 
 ## Citation
 
@@ -65,7 +65,7 @@ The paper is on [arXiv](https://arxiv.org/abs/ARXIV_ID). The mining and evaluati
   author  = {Chen, Tianle and Singh, Pushkar and Todi, Ketan and Paria, Biswajit and
              He, Qijia and Wang, Wenqi and Tan, Yuwen and Zhong, Jike and
              Basu, Sugato and Ghadiyaram, Deepti and Akula, Arjun},
-  journal = {arXiv preprint arXiv:ARXIV_ID},
+  journal = {arXiv preprint arXiv:2610.19376},
   year    = {2026}
 }
 ```
