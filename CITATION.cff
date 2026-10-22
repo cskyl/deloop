@@ -1,0 +1,64 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite the paper below."
+title: "DeLoop: Repeated Actions as Self-Supervision for Long-Horizon Agents"
+url: "https://cskyl.github.io/deloop/"
+repository-code: "https://github.com/cskyl/deloop"
+authors:
+  - family-names: Chen
+    given-names: Tianle
+  - family-names: Singh
+    given-names: Pushkar
+  - family-names: Todi
+    given-names: Ketan
+  - family-names: Paria
+    given-names: Biswajit
+  - family-names: He
+    given-names: Qijia
+  - family-names: Wang
+    given-names: Wenqi
+  - family-names: Tan
+    given-names: Yuwen
+  - family-names: Zhong
+    given-names: Jike
+  - family-names: Basu
+    given-names: Sugato
+  - family-names: Ghadiyaram
+    given-names: Deepti
+  - family-names: Akula
+    given-names: Arjun
+keywords:
+  - LLM agents
+  - long-horizon agents
+  - agent loops
+  - context compression
+  - preference optimization
+  - self-supervision
+preferred-citation:
+  type: article
+  title: "DeLoop: Repeated Actions as Self-Supervision for Long-Horizon Agents"
+  journal: "arXiv preprint arXiv:ARXIV_ID"
+  year: 2026
+  url: "https://arxiv.org/abs/ARXIV_ID"
+  authors:
+    - family-names: Chen
+      given-names: Tianle
+    - family-names: Singh
+      given-names: Pushkar
+    - family-names: Todi
+      given-names: Ketan
+    - family-names: Paria
+      given-names: Biswajit
+    - family-names: He
+      given-names: Qijia
+    - family-names: Wang
+      given-names: Wenqi
+    - family-names: Tan
+      given-names: Yuwen
+    - family-names: Zhong
+      given-names: Jike
+    - family-names: Basu
+      given-names: Sugato
+    - family-names: Ghadiyaram
+      given-names: Deepti
+    - family-names: Akula
+      given-names: Arjun

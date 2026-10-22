@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://cskyl.github.io/deloop/sitemap.xml
