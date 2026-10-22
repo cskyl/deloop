@@ -134,8 +134,6 @@
     </figure>
   </div>
 
-  <p class="tldr"><b>TL;DR</b> An agent that repeats a tool call and gets the same observation back has given us a free training pair: the repeat is the negative, and its own later recovery is the positive. Training on these self-mined pairs cuts loops by 9.4× on Qwen3-8B, needs about one third of the steps, and raises task success on Qwen3-14B and Qwen3-32B by about 7 points.</p>
-
   <section id="abstract" class="abstract">
     <h2>Abstract</h2>
     <div class="prose">
@@ -147,7 +145,7 @@
 
   <section id="demo">
     <div class="section-heading"><h2>What Is a Loop?</h2></div>
-    <p class="section-intro">A loop occurs when the agent repeats a previous tool call with identical arguments and receives the same observation, so the step adds no new information. Play the example below to see how compression hides an earlier call, how the agent repeats it, and how DeLoop turns the repeat into a training pair.</p>
+    <p class="section-intro">A loop occurs when the agent repeats a previous tool call with identical arguments and receives the same observation. Thus, that step adds no new information.</p>
 
     <div class="demo" id="loop-demo">
       <div class="demo-toolbar" role="group" aria-label="Example controls">
@@ -187,7 +185,7 @@
           <p class="demo-msg" aria-live="polite"></p>
         </div>
       </div>
-      <p class="demo-caption">The baseline rollout follows the real Qwen3-8B episode in the paper's appendix (earlier turns abridged). The DeLoop rollout is a schematic of the trained behavior on the same state.</p>
+      <p class="demo-caption">Baseline: the Qwen3-8B CodeGym rollout in the paper's appendix (abridged). DeLoop: a schematic of the trained behavior from the same state.</p>
     </div>
   </section>
 
@@ -198,51 +196,51 @@
         <a class="figure-link" href="static/images/fig_loops_hurt.png" data-lightbox>
           <img src="static/images/fig_loops_hurt.png" width="1455" height="888" loading="lazy" decoding="async" alt="Task failure rate with and without a loop for Qwen3-8B, Qwen3-14B, and four Gemini models; runs with a loop fail more often in every model.">
         </a>
-        <figcaption>Runs that enter a loop fail more often in every model we evaluate (task failure rate, CodeGym under compression).</figcaption>
+        <figcaption><b>Failure rates of looping and loop-free runs</b> for Qwen3-8B, Qwen3-14B, and four Gemini models in their compressed settings.</figcaption>
       </figure>
       <figure>
         <a class="figure-link" href="static/images/fig_compression.png" data-lightbox>
           <img src="static/images/fig_compression.png" width="1455" height="1416" loading="lazy" decoding="async" alt="(a) Qwen3-8B loop rate rises from 29.0% with no compression to 57.3% at a 4,096-token summarization budget and 64.7% at 2,048. (b) Three Gemini models loop more when compression is triggered.">
         </a>
-        <figcaption>(a) Qwen3-8B loops more as the summarization budget shrinks. (b) Gemini models loop more once compression is triggered.</figcaption>
+        <figcaption><b>Loop rates with and without compression.</b> (a) Qwen3-8B on CodeGym across context settings. (b) Gemini full-history runs versus compression-triggered episodes of summarization runs.</figcaption>
       </figure>
     </div>
     <div class="prose findings">
-      <p><b>Loops waste interaction.</b> On CodeGym under summarization at 4,096 tokens, looping Qwen3-8B runs contain 6.5 looping actions on average, execute 10.5 more actions per task than loop-free runs, and carry 11k more tokens. On average over six Qwen3 and Gemini models, 59.5% of looping runs fail, compared with 33.4% of loop-free runs.</p>
-      <p><b>Compression makes them more common.</b> Qwen3-8B loops in 29.0% of runs with the full history, 57.3% when summarizing at 4,096 tokens, and 64.7% at 2,048 tokens. When we remove the record of the most recent completed tool call from 300 compressed histories, the agent repeats that call in 48.8% of samples, against 3.3% with the record present.</p>
-      <p><b>Better context management does not close the gap.</b> Summaries that keep an explicit trace or ledger of past actions still loop in 52.0% to 62.7% of runs, and the ACON and LLMLingua-2 compressors reach 46.3% and 46.7%, all well above the 29.0% with the full history. The agent often fails to use a record it has, so we train the policy itself.</p>
+      <p><b>Loops are costly.</b> On average over six Qwen3 and Gemini models, 59.5% of looping runs fail, compared with 33.4% of loop-free runs. Looping Qwen3-8B runs execute 10.5 more actions per task on average than loop-free runs and contain 11k more tokens.</p>
+      <p><b>Compression makes loops more common.</b> On CodeGym, Qwen3-8B loops in 29.0% of runs with the full history, 57.3% under summarization at 4,096 tokens, and 64.7% at 2,048 tokens. In 300 compressed histories, the agent repeats the most recent completed tool call in 3.3% of samples with its record present and 48.8% with it removed.</p>
+      <p><b>Better context management does not close this gap.</b> Summaries that keep an explicit record of past actions still loop in 52.0% to 62.7% of runs. The agent often fails to use a record it has, so we train the policy itself.</p>
     </div>
   </section>
 
   <section id="method">
     <div class="section-heading"><h2>Method: Repeated Actions as Self-Supervision</h2></div>
-    <p class="section-intro">DeLoop runs the compressed agent on training tasks, finds its loops with a structural detector, and turns each loop it later recovers from into a preference pair.</p>
+    <p class="section-intro">To reduce looping under compressed context, we propose DeLoop, preference optimization on self-mined loop pairs.</p>
     <div class="two-col method-grid">
       <ol class="steps">
-        <li><strong>A. Detect loops.</strong> A step is a <em>repeat</em> if its canonicalized tool call and observation <span class="math" data-tex="x_t=(\kappa(a_t),o_t)"></span> already appeared earlier in the rollout. A repeated call with a new observation is not a loop.</li>
-        <li><strong>B. Mine pairs.</strong> The looping action is the rejected response <span class="math" data-tex="y^-=a_t"></span>. The first later action that is not a repeat and differs from it is the chosen response <span class="math" data-tex="y^+=a_{t'}"></span>. Both are paired with the history before the loop, <span class="math" data-tex="x=h_{<t}"></span>. A loop the agent never recovers from gives no pair.</li>
-        <li><strong>C. Train with DPO.</strong> The policy learns to prefer the recovery over the repeat under the same context, with the frozen base policy as the reference.</li>
+        <li><strong>A. Detect loops.</strong> Step <i>t</i> is a <em>repeat</em> if its signature <span class="math" data-tex="x_t=(\kappa(a_t),o_t)"></span> appeared earlier in the rollout.</li>
+        <li><strong>B. Mine pairs.</strong> The looping action is the rejected response <span class="math" data-tex="y^-=a_t"></span>, and the first later action that breaks the loop is the chosen response <span class="math" data-tex="y^+=a_{t'}"></span>, both paired with the history before the loop, <span class="math" data-tex="x=h_{<t}"></span>.</li>
+        <li><strong>C. Train with DPO.</strong> The policy learns to prefer the chosen action over the looping action under the same context, with the frozen base policy as the reference.</li>
       </ol>
       <figure class="method-fig">
         <a class="figure-link" href="static/images/fig_mining_clean.png" data-lightbox>
           <img src="static/images/fig_mining_clean.png" width="1455" height="879" loading="lazy" decoding="async" alt="An agent rollout where FindUnvisited(3,0) returns 3,0 three times; the repeated call becomes the rejected action and the later MarkVisited(3,0) becomes the chosen action; the pair trains DeLoop with DPO.">
         </a>
-        <figcaption>Mining a preference pair from one rollout.</figcaption>
+        <figcaption><b>A self-mined preference pair.</b> Abridged Qwen3-8B CodeGym rollout. <i>x</i>: history before the looping action; <i>y</i><sup>−</sup>: looping action; <i>y</i><sup>+</sup>: first later loop-breaking action.</figcaption>
       </figure>
     </div>
     <div class="equation" aria-label="DPO loss">
       <div class="math display" data-tex="t'=\min\{\,u>t:\ s_u=0,\ \kappa(a_u)\neq\kappa(a_t)\,\},\qquad \mathcal{L}=-\log\sigma\!\Big(\beta\log\tfrac{\pi_\theta(y^{+}\mid x)}{\pi_{\mathrm{ref}}(y^{+}\mid x)}-\beta\log\tfrac{\pi_\theta(y^{-}\mid x)}{\pi_{\mathrm{ref}}(y^{-}\mid x)}\Big)"></div>
     </div>
-    <p class="note-line">Pair construction uses only the actions and observations: <b>no task reward, gold label, or LLM judge</b>. A recovery gives a training pair even when the rollout ultimately fails the task.</p>
+    <p class="note-line">Pair construction requires <b>no task reward, gold label, or LLM judge</b>, and a recovery provides a training pair even if the rollout ultimately fails the task.</p>
   </section>
 
   <section id="results">
     <div class="section-heading"><h2>Results</h2></div>
 
     <article id="main-results" class="result">
-      <h3>Main comparison on CodeGym</h3>
+      <h3>Main results on CodeGym</h3>
       <p class="setting"><b>Agent</b> Qwen3-8B <span>·</span> <b>Setting</b> summarization at 4,096 tokens <span>·</span> <b>Tasks</b> 300 held-out</p>
-      <p>DeLoop cuts the loop rate <b>9.4×</b>, from 57.3% to <b>6.1%</b>, the lowest of all methods. Steps per task fall from 15.00 to <b>4.67</b> and tokens per task by <b>47%</b>, while task success holds. Adding cross-domain pairs (DeLoop-Mix) raises task success from 25.1% to <b>30.3%</b>.</p>
+      <p>DeLoop cuts the loop rate <b>9.4×</b>, from 57.3% to <b>6.1%</b>, the lowest of all methods; the strongest labeled baseline, gold-label DPO, reaches 22.3%. Steps per task fall from 15.00 to <b>4.67</b> and tokens per task by <b>47%</b>, while task success holds. Adding cross-domain pairs (DeLoop-Mix) raises task success from 25.1% to <b>30.3%</b>.</p>
 
       <div class="chart" id="main-chart">
         <div class="chart-head">
@@ -276,35 +274,35 @@
     </article>
 
     <article id="scaling" class="result">
-      <h3>Scaling to larger models</h3>
+      <h3>Model scaling</h3>
       <p class="setting"><b>Agents</b> Qwen3-8B, Qwen3-14B, Qwen3-32B <span>·</span> <b>Pairs</b> mined from each model's own rollouts</p>
-      <p>Loops fall at every scale, 3.5× on Qwen3-14B and 3.0× on Qwen3-32B, and tokens per task fall by 35% and 29%. At these scales the repair also raises task success: from 45.1% to <b>52.3%</b> on Qwen3-14B and from 37.7% to <b>44.8%</b> on Qwen3-32B.</p>
+      <p>Loops fall at every scale, <b>3.5×</b> on Qwen3-14B and <b>3.0×</b> on Qwen3-32B. Tokens per task fall by <b>35%</b> and <b>29%</b>, respectively. At these scales DeLoop also raises task success: from 45.1% to <b>52.3%</b> on Qwen3-14B and from 37.7% to <b>44.8%</b> on Qwen3-32B.</p>
       <figure>
         <div class="figure-scroll" tabindex="0" role="region" aria-label="Task success versus loop rate, steps, and tokens per task for three model sizes.">
           <a class="figure-link" href="static/images/fig_scale.png" data-lightbox>
             <img src="static/images/fig_scale.png" width="2017" height="656" loading="lazy" decoding="async" alt="Three panels: task success versus loop rate, steps per task, and tokens per task for Qwen3-8B, 14B, and 32B; DeLoop (stars) moves each model to fewer loops, fewer steps, and fewer tokens than its compressed baseline (squares).">
           </a>
         </div>
-        <figcaption>Task success versus loop rate, steps, and estimated tokens per task. Squares: compressed baseline; stars: DeLoop; colors: model size.<span class="swipe-hint">Swipe to see the whole figure.</span></figcaption>
+        <figcaption><b>Model scaling on CodeGym.</b> Task success versus loop rate, steps, and estimated tokens per task. Squares: compressed baseline; stars: DeLoop; colors: model size.<span class="swipe-hint">Swipe to see the whole figure.</span></figcaption>
       </figure>
     </article>
 
     <article id="robustness" class="result">
       <h3>Cross-domain data, context settings, and memory policies</h3>
-      <p>DeLoop-Mix adds 4,635 cross-domain pairs from ALFWorld, Open-AgentRL, and Terminal-Bench, mined with the same label-free rule. It raises success both with and without compression, and the loop repair holds across five context settings and seven memory policies, including summaries augmented with an action ledger (62.7% → <b>11.3%</b> loops).</p>
+      <p>DeLoop-Mix adds 4,635 cross-domain pairs from ALFWorld, Open-AgentRL, and Terminal-Bench, mined with the same label-free rule, and raises success both with and without compression (a). Across five context settings, the DeLoop loop rate remains between 4.7% and 12.8% while the untrained baseline reaches 65.3% (b). DeLoop-Mix lowers the loop rate under all seven memory policies; with an action ledger, from 62.7% to <b>11.3%</b> (c).</p>
       <figure>
         <div class="figure-scroll" tabindex="0" role="region" aria-label="Cross-domain data and context management results.">
           <a class="figure-link" href="static/images/fig_robust.png" data-lightbox>
             <img src="static/images/fig_robust.png" width="2017" height="656" loading="lazy" decoding="async" alt="(a) Task success with and without compression for the base agent, DeLoop, and DeLoop-Mix. (b) Loop rate across five context settings: DeLoop stays low while the base agent rises. (c) Loop rate across seven memory policies: DeLoop-Mix is far lower under every policy.">
           </a>
         </div>
-        <figcaption>(a) Task success with and without compression. (b) Loop rate across context settings. (c) Loop rate across memory policies.<span class="swipe-hint">Swipe to see the whole figure.</span></figcaption>
+        <figcaption><b>Cross-domain data and context management.</b> Qwen3-8B on CodeGym. (a) Task success with and without compression. (b) Loop rate across context settings. (c) Loop rate across memory policies.<span class="swipe-hint">Swipe to see the whole figure.</span></figcaption>
       </figure>
     </article>
 
     <article id="environments" class="result">
       <h3>Other agent environments and benchmarks</h3>
-      <p>With each environment's native loop and success metrics, loops fall in all four further environments, by up to 32.8 points on AppWorld, and tokens per task fall wherever recorded. In native harnesses, DeLoop cuts unproductive duplicate calls on Terminal-Bench from 16.6 to <b>6.9</b> per task, and DeLoop-Mix lowers the BrowseComp-Plus loop rate from 22.4% to <b>1.2%</b> while matching the untrained model's accuracy.</p>
+      <p>Loops fall in all four further environments, by up to 32.8 points on AppWorld, and tokens per task fall wherever recorded. In native harnesses, DeLoop cuts unproductive duplicate calls on Terminal-Bench from 16.6 to <b>6.9</b> per task, and DeLoop-Mix lowers the BrowseComp-Plus loop rate from 22.4% to <b>1.2%</b> while matching the untrained model's accuracy. Trained only on CodeGym pairs, DeLoop on Qwen3-32B lowers the ALFWorld loop rate from 64.9% to <b>54.5%</b> and raises task success from 33.6% to <b>42.5%</b>.</p>
       <div class="table-scroll">
         <table class="results compact">
           <thead>
@@ -319,16 +317,31 @@
           </tbody>
         </table>
       </div>
-      <p class="table-note">Base: untrained Qwen3-8B. Ours: DeLoop-Mix. Native metrics per environment; bold blue marks an improvement.</p>
+      <p class="table-note"><b>Evaluation in four additional agent environments.</b> Base: untrained Qwen3-8B. Ours: DeLoop-Mix. Native metrics; bold blue: improvement.</p>
     </article>
 
     <article id="analysis" class="result">
-      <h3>What the training signal does</h3>
+      <h3>Ablation studies</h3>
+      <div class="table-scroll" style="max-width: 620px">
+        <table class="results compact">
+          <thead><tr><th>Policy</th><th>Loop (%) ↓</th><th>Success (%) ↑</th></tr></thead>
+          <tbody>
+            <tr class="row-base"><td>Compressed baseline</td><td>57.3</td><td>25.1</td></tr>
+            <tr class="group"><td colspan="3">Objective (same loop signal)</td></tr>
+            <tr class="row-ours"><td>DPO (DeLoop)</td><td>6.1<span class="delta">(−51.2)</span></td><td>25.9<span class="delta">(+0.8)</span></td></tr>
+            <tr><td>KTO</td><td>12.6</td><td>23.8</td></tr>
+            <tr><td>IPO</td><td>11.7</td><td>24.0</td></tr>
+            <tr><td>Looping-action penalty GRPO</td><td>15.0</td><td>24.7</td></tr>
+            <tr><td>SFT (chosen action only)</td><td>37.7</td><td>21.3</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note"><b>Training-objective ablations.</b> Qwen3-8B on CodeGym under summarization at 4,096 tokens. DPO, KTO, IPO, and SFT use the same 8,000 self-mined pairs. Parentheses: change from the compressed baseline.</p>
       <ul class="facts">
-        <li><b>The looping action matters.</b> Imitating only the loop-breaking action leaves a loop rate of 37.7%; contrasting it with the looping action brings it to 6.1%.</li>
-        <li><b>The signal works across objectives.</b> KTO, IPO, and online GRPO on the same signal all cut the loop rate to 15.0% or below; DPO gives the lowest loop rate and the highest task success.</li>
-        <li><b>The remaining repeats are informative.</b> After training, the share of repeated calls that return new information rises from 29.9% to 69.8%.</li>
-        <li><b>General ability is preserved</b> on LiveCodeBench, MT-Bench, and IFEval.</li>
+        <li><b>The looping action matters.</b> Imitating only the loop-breaking action leaves a loop rate of 37.7%, while the contrast with the looping action brings it to 6.1%.</li>
+        <li><b>Every objective cuts the loop rate</b> to 15.0% or below, and DPO gives the lowest loop rate and the highest task success.</li>
+        <li><b>Remaining repeated actions.</b> The share of repeats that return new information rises from 29.9% to 69.8%.</li>
+        <li><b>General capability is preserved</b> on LiveCodeBench, MT-Bench, and IFEval.</li>
       </ul>
     </article>
   </section>
@@ -336,7 +349,7 @@
   <section id="conclusion">
     <div class="section-heading"><h2>Conclusion</h2></div>
     <div class="prose">
-      <p>Long-horizon agents that compress their history fall into loops: they re-issue an action they already ran and receive the same result. The loop labels itself: the looping action is the rejected action, and the agent's later loop-breaking action is the chosen one. Trained on these self-mined pairs, DeLoop cuts the loop rate 9.4× at about one third of the steps per task while maintaining task success, and raises task success by 7.2 points at 14B and 7.1 points at 32B. An agent's own loops become its supervision: <em>break the loop, keep the progress.</em></p>
+      <p>Long-horizon agents that compress their history fall into loops: they re-issue an action they already ran and receive the same result. The loop labels itself: the looping action is the rejected action, and the agent's later loop-breaking action is the chosen one. An agent's own loops become its supervision: <em>break the loop, keep the progress.</em></p>
     </div>
   </section>
 
@@ -357,7 +370,6 @@
 </main>
 
 <footer class="site-footer">
-  <p>Code and data will be released at <a href="https://github.com/cskyl/deloop">github.com/cskyl/deloop</a> after review.</p>
   <p>© 2026 The authors. Page content licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>
 </footer>
 

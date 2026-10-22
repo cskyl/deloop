@@ -106,6 +106,7 @@ h3 { font: 500 21px/1.3 var(--display); margin: 30px 0 6px; }
 .steps li:last-child { border-bottom: 0; }
 .steps strong { font-family: var(--display); font-weight: 500; color: var(--ink); }
 .method-grid { grid-template-columns: 1.05fr 1fr; }
+@media (max-width: 760px) { .method-grid { grid-template-columns: 1fr; } }
 .equation { overflow-x: auto; margin: 18px 0 8px; padding: 14px 10px; background: var(--panel); border-radius: 10px; text-align: center; }
 .katex { font-size: 1.04em; }
 .equation .katex { font-size: 1.12em; }
