@@ -60,6 +60,7 @@ main > *, .site-footer { max-width: var(--w); margin-left: auto; margin-right: a
 .button { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 999px; background: var(--ink); color: #fff; font: 500 15px/1 var(--display); transition: background .15s ease; }
 .button:hover { background: #3a4048; text-decoration: none; }
 .button svg { width: 17px; height: 17px; fill: currentColor; }
+.button .hf { font-size: 16px; line-height: 1; }
 .button.disabled { background: var(--rule-2); color: var(--ink-3); cursor: not-allowed; }
 .button.disabled small { font: 400 12px/1 var(--sans); }
 

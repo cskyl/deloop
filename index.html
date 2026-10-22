@@ -52,22 +52,22 @@
     "name": "DeLoop: Repeated Actions as Self-Supervision for Long-Horizon Agents",
     "description": "Language-model agents re-issue tool calls they already made and get the same observation back. DeLoop pairs each looping action with the agent's first later loop-breaking action in the same rollout and trains with direct preference optimization, without task rewards, gold answers, or LLM judges.",
     "url": "https://cskyl.github.io/deloop/",
-    "sameAs": "https://arxiv.org/abs/2610.19376",
+    "sameAs": ["https://arxiv.org/abs/2610.19376", "https://huggingface.co/papers/2610.19376"],
     "image": "https://cskyl.github.io/deloop/static/images/fig_teaser.png",
     "datePublished": "2026-10-14",
     "keywords": ["LLM agents", "agent loops", "context compression", "preference optimization", "self-supervision", "long-horizon agents"],
     "author": [
-      {"@type": "Person", "name": "Tianle Chen", "affiliation": ["Google", "Boston University"]},
+      {"@type": "Person", "name": "Tianle Chen", "url": "https://cs-people.bu.edu/tianle/", "affiliation": ["Google", "Boston University"]},
       {"@type": "Person", "name": "Pushkar Singh", "affiliation": "Google"},
-      {"@type": "Person", "name": "Ketan Todi", "affiliation": "Google"},
-      {"@type": "Person", "name": "Biswajit Paria", "affiliation": "Google"},
-      {"@type": "Person", "name": "Qijia He", "affiliation": ["Google", "University of Washington"]},
-      {"@type": "Person", "name": "Wenqi Wang", "affiliation": ["Google", "Boston University"]},
-      {"@type": "Person", "name": "Yuwen Tan", "affiliation": ["Google", "Boston University"]},
-      {"@type": "Person", "name": "Jike Zhong", "affiliation": "University of Southern California"},
-      {"@type": "Person", "name": "Sugato Basu", "affiliation": "Google"},
-      {"@type": "Person", "name": "Deepti Ghadiyaram", "affiliation": "Boston University"},
-      {"@type": "Person", "name": "Arjun Akula", "affiliation": "Google DeepMind"}
+      {"@type": "Person", "name": "Ketan Todi", "url": "https://scholar.google.com/citations?user=C08y5roAAAAJ", "affiliation": "Google"},
+      {"@type": "Person", "name": "Biswajit Paria", "url": "https://biswajitsc.github.io/", "affiliation": "Google"},
+      {"@type": "Person", "name": "Qijia He", "url": "https://qijia-he.github.io/", "affiliation": ["Google", "University of Washington"]},
+      {"@type": "Person", "name": "Wenqi Wang", "url": "https://wqwang.me/", "affiliation": ["Google", "Boston University"]},
+      {"@type": "Person", "name": "Yuwen Tan", "url": "https://1yuwen.github.io/", "affiliation": ["Google", "Boston University"]},
+      {"@type": "Person", "name": "Jike Zhong", "url": "https://jike338.github.io/", "affiliation": "University of Southern California"},
+      {"@type": "Person", "name": "Sugato Basu", "url": "https://sites.google.com/site/sugatobasu/", "affiliation": "Google"},
+      {"@type": "Person", "name": "Deepti Ghadiyaram", "url": "https://deeptigp.github.io/", "affiliation": "Boston University"},
+      {"@type": "Person", "name": "Arjun Akula", "url": "https://www.arjunakula.com/", "affiliation": "Google DeepMind"}
     ]
   }
   </script>
@@ -92,15 +92,15 @@
     <div class="authors">
       <span><a href="https://cs-people.bu.edu/tianle/">Tianle Chen</a><sup>1,2</sup></span>,
       <span><span class="author-name">Pushkar Singh</span><sup>1,†</sup></span>,
-      <span><span class="author-name">Ketan Todi</span><sup>1</sup></span>,
-      <span><span class="author-name">Biswajit Paria</span><sup>1</sup></span>,
+      <span><a href="https://scholar.google.com/citations?user=C08y5roAAAAJ">Ketan Todi</a><sup>1</sup></span>,
+      <span><a href="https://biswajitsc.github.io/">Biswajit Paria</a><sup>1</sup></span>,
       <span><a href="https://qijia-he.github.io/">Qijia He</a><sup>1,3</sup></span>,
-      <span><span class="author-name">Wenqi Wang</span><sup>1,2</sup></span>,
-      <span><span class="author-name">Yuwen Tan</span><sup>1,2</sup></span>,
-      <span><span class="author-name">Jike Zhong</span><sup>4</sup></span>,
+      <span><a href="https://wqwang.me/">Wenqi Wang</a><sup>1,2</sup></span>,
+      <span><a href="https://1yuwen.github.io/">Yuwen Tan</a><sup>1,2</sup></span>,
+      <span><a href="https://jike338.github.io/">Jike Zhong</a><sup>4</sup></span>,
       <span><a href="https://sites.google.com/site/sugatobasu/">Sugato Basu</a><sup>1</sup></span>,
-      <span><span class="author-name">Deepti Ghadiyaram</span><sup>2</sup></span>,
-      <span><span class="author-name">Arjun Akula</span><sup>5,†</sup></span>
+      <span><a href="https://deeptigp.github.io/">Deepti Ghadiyaram</a><sup>2</sup></span>,
+      <span><a href="https://www.arjunakula.com/">Arjun Akula</a><sup>5,†</sup></span>
     </div>
     <div class="affiliations">
       <span><sup>1</sup>Google</span>
@@ -114,6 +114,7 @@
     <nav class="resources" aria-label="Paper resources">
       <a class="button" href="https://arxiv.org/abs/2610.19376">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6zM14 3.5V8h4.5"/></svg>Paper</a>
+      <a class="button" href="https://huggingface.co/papers/2610.19376"><span class="hf" aria-hidden="true">🤗</span>HF Paper</a>
       <span class="button disabled" aria-disabled="true" title="Code and data will be released after review">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5 1 12l7 7 2-2-5-5 5-5zm8 0-2 2 5 5-5 5 2 2 7-7z"/></svg>Code <small>coming soon</small></span>
       <a class="button" href="#bibtex">

@@ -4,20 +4,21 @@
 
 [Tianle Chen](https://cs-people.bu.edu/tianle/)<sup>1,2</sup>,
 Pushkar Singh<sup>1,†</sup>,
-Ketan Todi<sup>1</sup>,
-Biswajit Paria<sup>1</sup>,
+[Ketan Todi](https://scholar.google.com/citations?user=C08y5roAAAAJ)<sup>1</sup>,
+[Biswajit Paria](https://biswajitsc.github.io/)<sup>1</sup>,
 [Qijia He](https://qijia-he.github.io/)<sup>1,3</sup>,
-Wenqi Wang<sup>1,2</sup>,
-Yuwen Tan<sup>1,2</sup>,
-Jike Zhong<sup>4</sup>,
+[Wenqi Wang](https://wqwang.me/)<sup>1,2</sup>,
+[Yuwen Tan](https://1yuwen.github.io/)<sup>1,2</sup>,
+[Jike Zhong](https://jike338.github.io/)<sup>4</sup>,
 [Sugato Basu](https://sites.google.com/site/sugatobasu/)<sup>1</sup>,
-Deepti Ghadiyaram<sup>2</sup>,
-Arjun Akula<sup>5,†</sup>
+[Deepti Ghadiyaram](https://deeptigp.github.io/)<sup>2</sup>,
+[Arjun Akula](https://www.arjunakula.com/)<sup>5,†</sup>
 
 <sup>1</sup>Google &nbsp; <sup>2</sup>Boston University &nbsp; <sup>3</sup>University of Washington &nbsp; <sup>4</sup>University of Southern California &nbsp; <sup>5</sup>Google DeepMind &nbsp; <sup>†</sup>Project lead
 
 [![Project page](https://img.shields.io/badge/Project-Page-2166ac)](https://cskyl.github.io/deloop/)
 [![arXiv](https://img.shields.io/badge/arXiv-2610.19376-b31b1b)](https://arxiv.org/abs/2610.19376)
+[![HF Paper](https://img.shields.io/badge/%F0%9F%A4%97%20HF-Paper-ffcc4d)](https://huggingface.co/papers/2610.19376)
 [![Code](https://img.shields.io/badge/Code-coming%20soon-lightgrey)](#release-status)
 [![BibTeX](https://img.shields.io/badge/Cite-BibTeX-555)](#citation)
 
@@ -55,7 +56,7 @@ Language-model agents that run long tasks often redo work they have already done
 
 ## Release status
 
-The paper is on [arXiv](https://arxiv.org/abs/2610.19376). The mining and evaluation code, the self-mined pair corpora, and the trained adapters are under review and will be released in this repository. This repository currently hosts the [project page](https://cskyl.github.io/deloop/) only.
+The paper is on [arXiv](https://arxiv.org/abs/2610.19376) and [Hugging Face Papers](https://huggingface.co/papers/2610.19376). The mining and evaluation code, the self-mined pair corpora, and the trained adapters are under review and will be released in this repository. This repository currently hosts the [project page](https://cskyl.github.io/deloop/) only.
 
 ## Citation
 
